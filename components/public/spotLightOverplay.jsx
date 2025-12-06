@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
-function SpotLightOverlay() {
+function SpotLightOverPlay() {
   const [pos, setPos] = useState({ x: -9999, y: -9999 });
   const [visible, setVisible] = useState(false);
 
@@ -46,4 +46,4 @@ function SpotLightOverlay() {
   );
 }
 
-export default SpotLightOverlay;
+export default SpotLightOverPlay;
