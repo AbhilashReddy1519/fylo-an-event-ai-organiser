@@ -1,6 +1,6 @@
 'use client';
 
-import { SignUpButton, UserButton } from '@clerk/nextjs';
+import { SignInButton, UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -35,17 +35,22 @@ function Header() {
 
             {/* actions */}
             <div className="flex items-center">
-              <Button variant={'ghost'} size={'sm'} onClick={() => setShowUpgradeModel(true)}>
+              <Button
+                variant={'ghost'}
+                className={'cursor-pointer hover:underline'}
+                size={'sm'}
+                onClick={() => setShowUpgradeModel(true)}
+              >
                 Pricing
-              </Button>              
+              </Button>
               <Button
                 variant={'ghost'}
                 size={'sm'}
                 asChild
-                className={'mr-2'}
+                className={'mr-2 hover:underline'}
               >
                 <Link href={'/explore'}>Explore</Link>
-              </Button>              
+              </Button>
               <Authenticated>
                 {/* create event */}
                 <Button size={'sm'} asChild className={'flex gap-2 mr-4'}>
@@ -72,11 +77,11 @@ function Header() {
                 </UserButton>
               </Authenticated>
               <Unauthenticated>
-                <SignUpButton mode="modal">
-                  <Button size="lg" className={'cursor-pointer'}>
-                    Sign Up
+                <SignInButton mode="modal">
+                  <Button size="lg" className={'cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110 '}>
+                    Sign In
                   </Button>
-                </SignUpButton>
+                </SignInButton>
               </Unauthenticated>
             </div>
           </div>
