@@ -40,6 +40,8 @@ export const store = mutation({
       updatedAt: Date.now(),
     });
   },
+});
+
 export const getCurrentUser = query({
   handler: async ctx => {
     const identity = await ctx.auth.getUserIdentity();
@@ -60,5 +62,4 @@ export const getCurrentUser = query({
 
     return user;
   },
-});  },
 });
