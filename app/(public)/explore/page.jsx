@@ -11,7 +11,7 @@ const ExplorePage = () => {
     api.explore.getFeaturedEvents, {limit: 5}
   );
 
-  console.log(data);
+  // console.log(data);
   return <></>;
 };
 
