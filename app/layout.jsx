@@ -6,6 +6,7 @@ import Header from '@/components/layouts/Header';
 import { ConvexClientProvider } from './ConvexClientProvider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
+import { Toaster } from 'sonner';
 
 export const metadata = {
   title: 'Fylo',
@@ -42,9 +43,11 @@ export default function RootLayout({ children }) {
               <SpotLightOverplay />
               <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
                 <div className="relative z-15">{children}</div>
+                <Toaster richColors/>
               </main>
               {/* Footer */}
               <Footer />
+
             </ConvexClientProvider>
           </ClerkProvider>
         </ThemeProvider>
