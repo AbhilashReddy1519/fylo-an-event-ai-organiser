@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Cpu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -33,11 +34,11 @@ export default function Home() {
             </p>
 
             <Link href={'/explore'}>
-              <Button size={'xl'}>Get Started</Button>
+              <Button size={'xl'} className={'cursor-pointer'}>Get Started</Button>
             </Link>
           </div>
           {/* right */}
-          <div className='flex justify-center items-center'>
+          <div className="flex justify-center items-center">
             <video
               src="/phone-dark.webm"
               width={'100%'}
@@ -45,7 +46,7 @@ export default function Home() {
               loop
               muted
               autoPlay
-              className='sm:h-3/4 px-6 sm:w-3/4 lg:w-full lg:h-full'
+              className="sm:h-3/4 px-6 sm:w-3/4 lg:w-full lg:h-full"
             ></video>
           </div>
         </div>
