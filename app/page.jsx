@@ -34,7 +34,7 @@ export default function Home() {
             </p>
 
             <Link href={'/explore'}>
-              <Button size={'xl'}>Get Started</Button>
+              <Button size={'xl'} className={'cursor-pointer'}>Get Started</Button>
             </Link>
           </div>
           {/* right */}
