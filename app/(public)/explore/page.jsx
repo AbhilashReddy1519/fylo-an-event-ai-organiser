@@ -1,6 +1,8 @@
 'use client';
 
+import EventCard from '@/components/public/eventCard';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Carousel,
@@ -9,12 +11,22 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { api } from '@/convex/_generated/api';
 import { useConvexQuery } from '@/hooks/use-convex-query';
+import { CATEGORIES } from '@/lib/categories';
+import { createLocationSlug } from '@/lib/location-utils';
 import { format } from 'date-fns';
 import Autoplay from 'embla-carousel-autoplay';
-import { Calendar, MapPin, Users } from 'lucide-react';
+import {
+  ArrowRight,
+  Calendar,
+  LoaderPinwheel,
+  MapPin,
+  Users,
+} from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useRef } from 'react';
 
@@ -29,15 +41,15 @@ const ExplorePage = () => {
     api.explore.getFeaturedEvents,
     { limit: 5 }
   );
-
   const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
     api.explore.getEventsByLocation,
     {
-      city: currentUser?.location?.city || 'Gurugram',
+      city: currentUser?.location?.city || 'Gurgaon',
       state: currentUser?.location?.state || 'Haryana',
       limit: 4,
     }
   );
+  // console.log(localEvents);
 
   const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(
     api.explore.getPopularEvents,
@@ -45,15 +57,42 @@ const ExplorePage = () => {
       limit: 6,
     }
   );
+  // console.log(popularEvents);
 
   const { data: categoryCounts } = useConvexQuery(
     api.explore.getCategoryCounts
   );
 
+  const categoriesWithCounts = CATEGORIES.map(cat => ({
+    ...cat,
+    count: categoryCounts?.[cat.id] || 0,
+  }));
+
   const handleEventClick = slug => {
     router.push(`/explore/${slug}`);
   };
 
+  const handleCategoryClick = categoryId => {
+    router.push(`/explore/${categoryId}`);
+  };
+
+  const handleViewLocalEvents = () => {
+    const city = currentUser?.location?.city || 'Gurugram';
+    const state = currentUser?.location?.state || 'Haryana';
+
+    const slug = createLocationSlug(city, state);
+    router.push(`/explore/${slug}`);
+  };
+
+  const isLoading = loadingFeatured || loadingLocal || loadingPopular;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoaderPinwheel className="w-30 h-30 animate-spin text-[#999999]" />
+      </div>
+    );
+  }
   // console.log(data);
   return (
     <>
@@ -122,7 +161,9 @@ const ExplorePage = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4" />
-                          <span className="text-sm">{event.registrationCount}</span>
+                          <span className="text-sm">
+                            {event.registrationCount}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -136,12 +177,123 @@ const ExplorePage = () => {
         </div>
       )}
       {/* local events */}
+      {localEvents && localEvents.length > 0 && (
+        <div className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-3xl mb-1">Events Near you</h2>
+              <p>Happening in {currentUser?.location?.city || 'your area'}</p>
+            </div>
 
+            <Button
+              variant={'outline'}
+              className={'gap-2 cursor-pointer'}
+              onClick={handleViewLocalEvents}
+            >
+              View All <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {localEvents.map(event => (
+              <EventCard
+                key={event._id}
+                event={event}
+                variant={'grid'}
+                onClick={() => {
+                  handleEventClick(event.slug);
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       {/* browse by categories  */}
+      <div className="mb-16">
+        <h2 className="text-3xl mb-6">
+          Find{' '}
+          <span className="text-transparent bg-linear-to-r from-[#22d3ee] via-[#8b5cf6] to-[#ec4899] bg-clip-text">
+            Events
+          </span>{' '}
+          by Interest
+        </h2>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {categoriesWithCounts.map(category => {
+            return (
+              <Card
+                key={category.id}
+                className={
+                  'py-2 group cursor-pointer hover:shadow-sm hover:shadow-white transition-all hover:border-white '
+                }
+                onClick={() => {
+                  handleCategoryClick(category.id);
+                }}
+              >
+                <CardContent className={'px-3 sm:px-6 flex items-center gap-3'}>
+                  <div className="text-3xl sm:text-4xl text-[#dfd4d3]">
+                    <CategoryIcon category={category.id} className='text-blue-500' size={'30'}/>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="mb-1 text-sm group-hover:text-white text-[#b9b8b8] transition-colors">
+                      {category.label}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {category.count} Event{category.count !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
 
       {/* popular events accross country */}
+      {popularEvents && popularEvents.length > 0 && (
+        <div className="mb-16">
+          <div className="mb-6">
+            <h2 className="text-3xl mb-1">India&apos;s Trending Experiences</h2>
+            <p className="text-muted-foreground">
+              Uncover the events shaping India&apos;s rhythm right now
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 grid-cols-1">
+            {popularEvents.map(event => (
+              <EventCard
+                event={event}
+                key={event._id}
+                variant="list"
+                onClick={() => handleEventClick(event.slug)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* empty state */}
+
+      {!loadingFeatured &&
+        !loadingLocal &&
+        !loadingPopular &&
+        (!featuredEvents || featuredEvents.length === 0) &&
+        (!localEvents || localEvents.length === 0) &&
+        (!popularEvents || popularEvents.length === 0) && (
+          <Card className="p-12 text-center">
+            <div className="max-w-md mx-auto space-y-4">
+              <div className="text-6xl mb-4">🎉</div>
+              <h2 className="text-2xl font-bold">No events yet</h2>
+              <p className="text-muted-foreground">
+                Be the first to create an event in your area!
+              </p>
+              <Button asChild className="gap-2">
+                <Link href="/create-event">Create Event</Link>
+              </Button>
+            </div>
+          </Card>
+        )}
     </>
   );
 };

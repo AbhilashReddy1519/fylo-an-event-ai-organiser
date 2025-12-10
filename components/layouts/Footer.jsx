@@ -3,7 +3,7 @@ import React from 'react';
 function Footer() {
   return (
     <footer
-      className="border-t text-[#807f80] border-gray-800 min-h-50 backdrop-blur-2xl py-8 px-20 w-full mx-auto relative"
+      className="border-t text-[#e4e4e4] border-gray-800 min-h-50 backdrop-blur-2xl py-8 px-20 w-full mx-auto relative"
       style={{
         background: 'url(/footer.png)',
         backgroundSize: 'cover',
