@@ -20,7 +20,7 @@ const ExploreLayout = ({ children }) => {
               <Button
                 variant={'default'}
                 onClick={() => router.push('/explore')}
-                className={'gap-2 -ml-2 cursor-pointer hover:bg-black hover:text-white transition-colors duration-300 ease-in-out'}
+                className={'gap-2 -ml-2 cursor-pointer hover:bg-black hover:text-white transition-colors duration-500 ease-in-out'}
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Explore
