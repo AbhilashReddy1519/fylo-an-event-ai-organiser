@@ -9,10 +9,14 @@ import { Authenticated, Unauthenticated } from 'convex/react';
 import { BarLoader } from 'react-spinners';
 import { useStoreUser } from '@/hooks/use-store-user';
 import { Building, Plus, Ticket } from 'lucide-react';
+import { OnBoardingModal } from './OnBoardingModal';
+import { useOnboarding } from '@/hooks/use-onboarding';
 
 function Header() {
   const { isLoading } = useStoreUser();
   const [showUpgradeModel, setShowUpgradeModel] = useState();
+  const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
+    useOnboarding();
 
   return (
     <>
@@ -78,7 +82,12 @@ function Header() {
               </Authenticated>
               <Unauthenticated>
                 <SignInButton mode="modal">
-                  <Button size="lg" className={'cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110 '}>
+                  <Button
+                    size="lg"
+                    className={
+                      'cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110 '
+                    }
+                  >
                     Sign In
                   </Button>
                 </SignInButton>
@@ -95,6 +104,11 @@ function Header() {
           )}
         </nav>
         {/* modals */}
+        <OnBoardingModal
+          isOpen={showOnboarding}
+          onClose={handleOnboardingSkip}
+          onComplete={handleOnboardingComplete}
+        />
       </header>
     </>
   );
