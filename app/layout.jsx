@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
               <SpotLightOverplay />
               <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
                 <div className="relative z-15">{children}</div>
-                <Toaster richColors/>
+                <Toaster richColors position='top-right'/>
               </main>
               {/* Footer */}
               <Footer />
