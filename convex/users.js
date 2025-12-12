@@ -83,7 +83,7 @@ export const completeOnboarding = mutation({
     await ctx.db.patch(user._id, {
       location: args.location,
       interests: args.interests,
-      hasCompletedOnboarding: true,
+      hasCompletedOnBoarding: true,
       updatedAt: Date.now(),
     });
 
