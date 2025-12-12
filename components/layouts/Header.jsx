@@ -11,6 +11,7 @@ import { useStoreUser } from '@/hooks/use-store-user';
 import { Building, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
 import { useOnboarding } from '@/hooks/use-onboarding';
+import SearchLocationBar from '../public/searchLocationBar';
 
 function Header() {
   const { isLoading } = useStoreUser();
@@ -21,7 +22,7 @@ function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-transparent backdrop-blur-[6px] z-20  border-b">
-        <nav className="max-w-6xl mx-auto flex py-6 px-8">
+        <nav className="max-w-6xl mx-auto flex py-6 px-6">
           <div className="flex items-center justify-between w-full">
             {/* logo */}
             <Link href={'/'} className="flex items-center">
@@ -36,6 +37,9 @@ function Header() {
               {/* pro badge */}
             </Link>
             {/* search for desktop only */}
+            <div className="hidden md:flex flex-1 justify-center">
+              <SearchLocationBar />
+            </div>
 
             {/* actions */}
             <div className="flex items-center">
@@ -94,8 +98,6 @@ function Header() {
               </Unauthenticated>
             </div>
           </div>
-          {/* search for mobile only */}
-
           {/* loader */}
           {isLoading && (
             <div className="absolute bottom-0 left-0 w-full">
@@ -103,6 +105,10 @@ function Header() {
             </div>
           )}
         </nav>
+        {/* search for mobile only */}
+        <div className="md:hidden border-t px-3 py-3">
+          <SearchLocationBar />
+        </div>
         {/* modals */}
         <OnBoardingModal
           isOpen={showOnboarding}

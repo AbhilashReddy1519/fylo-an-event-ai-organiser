@@ -44,7 +44,7 @@ export default function Home() {
               loop
               muted
               autoPlay
-              className="sm:h-3/4 px-6 sm:w-3/4 lg:w-full lg:h-full"
+              className="sm:h-3/4 px-6 sm:w-3/4 sm:flex sm:justify-center mx-auto lg:w-full lg:h-full"
             ></video>
           </div>
         </div>
