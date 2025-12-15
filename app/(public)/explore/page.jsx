@@ -69,7 +69,7 @@ const ExplorePage = () => {
   }));
 
   const handleEventClick = slug => {
-    router.push(`/explore/${slug}`);
+    router.push(`/events/${slug}`);
   };
 
   const handleCategoryClick = categoryId => {

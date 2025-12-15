@@ -1,6 +1,6 @@
 'use client';
 
-import { SignInButton, UserButton } from '@clerk/nextjs';
+import { SignInButton, useAuth, UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -8,16 +8,21 @@ import { Button } from '../ui/button';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { BarLoader } from 'react-spinners';
 import { useStoreUser } from '@/hooks/use-store-user';
-import { Building, Plus, Ticket } from 'lucide-react';
+import { Building, Crown, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import SearchLocationBar from '../public/searchLocationBar';
+import { Badge } from '../ui/badge';
+import UpgradeModel from './upgradeModel';
 
 function Header() {
   const { isLoading } = useStoreUser();
   const [showUpgradeModel, setShowUpgradeModel] = useState();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
     useOnboarding();
+
+  const {has} = useAuth();
+  const hasPro = has?.({plan: 'pro'});
 
   return (
     <>
@@ -35,6 +40,16 @@ function Header() {
                 priority
               />
               {/* pro badge */}
+              {hasPro && (
+                <Badge
+                  className={
+                    'bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white ml-3'
+                  }
+                >
+                  <Crown className="h-3 w-3" />
+                  Pro
+                </Badge>
+              )}
             </Link>
             {/* search for desktop only */}
             <div className="hidden md:flex flex-1 justify-center">
@@ -43,14 +58,16 @@ function Header() {
 
             {/* actions */}
             <div className="flex items-center">
-              <Button
-                variant={'ghost'}
-                className={'cursor-pointer hover:underline'}
-                size={'sm'}
-                onClick={() => setShowUpgradeModel(true)}
-              >
-                Pricing
-              </Button>
+              {!hasPro && (
+                <Button
+                  variant={'ghost'}
+                  className={'cursor-pointer hover:underline'}
+                  size={'sm'}
+                  onClick={() => setShowUpgradeModel(true)}
+                >
+                  Pricing
+                </Button>
+              )}
               <Button
                 variant={'ghost'}
                 size={'sm'}
@@ -114,6 +131,12 @@ function Header() {
           isOpen={showOnboarding}
           onClose={handleOnboardingSkip}
           onComplete={handleOnboardingComplete}
+        />
+
+        <UpgradeModel
+          isOpen={showUpgradeModel}
+          onClose={() => setShowUpgradeModel(false)}
+          trigger='header'
         />
       </header>
     </>

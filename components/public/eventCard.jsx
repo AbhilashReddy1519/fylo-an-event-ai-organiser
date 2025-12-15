@@ -3,7 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import Image from 'next/image';
 import { getCategoryIcon, getCategoryLabel } from '@/lib/categories';
 import { format } from 'date-fns';
-import { Calendar, MapPin, Trash2, Users } from 'lucide-react';
+import { Calendar, Eye, MapPin, QrCode, Trash2, Users, X } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { CategoryIcon } from '../ui/CategoryIcon';
@@ -11,7 +11,8 @@ import { CategoryIcon } from '../ui/CategoryIcon';
 const EventCard = ({
   event,
   onClick,
-  showActions = false,
+  // showActions = false,
+  action = null, // "event" | "ticket" | null
   onDelete,
   variant = 'grid',
   className = '',
@@ -44,7 +45,7 @@ const EventCard = ({
                     backgroundColor: event.themeColor,
                   }}
                 >
-                  <CategoryIcon category={event.id}/>
+                  <CategoryIcon category={event.id} />
                   {console.log(event.category)}
                 </div>
               )}
@@ -83,7 +84,11 @@ const EventCard = ({
   return (
     <>
       <Card
-        className={`overflow-hidden group pt-0 ${onClick ? 'cursor-pointer hover:shadow-lg transition-all hover:border-[#999999]' : ''} ${className}`}
+        className={`overflow-hidden group pt-0 flex flex-col ${
+          onClick
+            ? 'cursor-pointer hover:shadow-lg transition-all hover:border-[#999999]'
+            : ''
+        } ${className}`}
         onClick={onClick}
       >
         <div className="h-40 overflow-hidden relative">
@@ -106,7 +111,7 @@ const EventCard = ({
                 backgroundColor: event.themeColor,
               }}
             >
-              <CategoryIcon category={event.id}/>
+              <CategoryIcon category={event.id} />
               {console.log(event.category)}
             </div>
           )}
@@ -116,65 +121,86 @@ const EventCard = ({
             </Badge>
           </div>
         </div>
-        <CardContent className={'gap-3 px-3 space-y-3'}>
-          <div className="">
-            <Badge
-              variant={'outline'}
-              className={'gap-2 mb-2 bg-white text-black'}
-            >
-              <CategoryIcon category={event.id}/>{' '}
-              {getCategoryLabel(event.category)}
-            </Badge>
-            <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-white transition-colors text-[#b9b8b8]">
-              {event.title}
-            </h3>
-          </div>
-          <div className="space-y-2 text-sm text-muted-foreground ">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>{format(event.startDate, 'PPP')}</span>
-            </div>
-
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-              <MapPin className="w-3 h-3" />
-              <span className="line-clamp-1">
-                {event.locationType === 'online' ? 'Online Event' : event.city}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-              <Users className="w-3 h-3" />
-              <span className="text-sm">
-                {event.registrationCount}/{event.capacity} registered
-              </span>
-            </div>
-          </div>
-
-          {showActions && (
-            <div>
-              <Button
-                className={'flex-1'}
+        <CardContent className={'p-3 flex-1 flex flex-col justify-between'}>
+          <div>
+            <div className="">
+              <Badge
                 variant={'outline'}
-                size={'sm'}
+                className={'gap-2 mb-2 bg-white text-black'}
+              >
+                <CategoryIcon category={event.category} />{' '}
+                {getCategoryLabel(event.category)}
+              </Badge>
+              <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-white transition-colors text-[#b9b8b8]">
+                {event.title}
+              </h3>
+            </div>
+
+            <div className="space-y-2 text-sm text-muted-foreground mt-3">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>{format(event.startDate, 'PPP')}</span>
+              </div>
+
+              <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
+                <MapPin className="w-3 h-3" />
+                <span className="line-clamp-1">
+                  {event.locationType === 'online'
+                    ? 'Online Event'
+                    : event.city}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
+                <Users className="w-3 h-3" />
+                <span className="text-sm">
+                  {event.registrationCount}/{event.capacity} registered
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {action && (
+            <div className="flex gap-2 pt-2">
+              {/* Primary button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-2"
                 onClick={e => {
                   e.stopPropagation();
                   onClick?.(e);
                 }}
               >
-                View
+                {action === 'event' ? (
+                  <>
+                    <Eye className="w-4 h-4" />
+                    View
+                  </>
+                ) : (
+                  <>
+                    <QrCode className="w-4 h-4" />
+                    Show Ticket
+                  </>
+                )}
               </Button>
 
+              {/* Secondary button - delete / cancel */}
               {onDelete && (
                 <Button
-                  variant={'outline'}
-                  size={'sm'}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
                   onClick={e => {
                     e.stopPropagation();
-                    onClick?.(e);
+                    onDelete(event._id);
                   }}
-                  className={'text-red-500 hover:text-red-600 hover:bg-red-50'}
                 >
-                  <Trash2 className="h-4 w-4 " />
+                  {action === 'event' ? (
+                    <Trash2 className="w-4 h-4" />
+                  ) : (
+                    <X className="w-4 h-4" />
+                  )}
                 </Button>
               )}
             </div>

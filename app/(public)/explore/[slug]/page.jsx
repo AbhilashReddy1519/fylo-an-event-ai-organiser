@@ -43,7 +43,7 @@ const DynamicExporePage = () => {
   );
 
   const handleEventClick = eventSlug => {
-    router.push(`events/${eventSlug}`);
+    router.push(`/events/${eventSlug}`);
   };
 
   if (isLoading) {
